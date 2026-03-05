@@ -6,16 +6,10 @@
 <a href="{{ url_for('register') }}" class=""> Don't have an account? Sign up here! </a>
 
 <form id="login" method="POST" action="/login">
-    <h2 class="text-3xl font-bold text-center mt-4 mb-8">Log In</h2>
-    <br>
-    <label class="label" for="username">Username:</label>
-    <input class="inputfield" type="text" id="username" name="username" required>
-    <br>
-    <label class="label" for="password">Password:</label>
-    <input class="inputfield" type="password" id="password" name="password" required>
-    <br>
-    <input class="submit" type="submit">
-    <br>
-    <button class="submit" type="submit">Sign up</button>
+
+    {{ form.hidden_tag()}}
+    {{ form.username()}}
+    {{ form.password()}}
+    {{ form.submit()}}
 
     {% endblock %}
