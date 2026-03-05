@@ -10,7 +10,7 @@ from flask_login import (
 )
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, Length, ValidationError, EqualTo
+from wtforms.validators import DataRequired, Email, Length, ValidationError
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import or_
 
@@ -29,6 +29,12 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///task_management.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False  # Avoids a warning
 app.config["SECRET_KEY"] = "This is a secret key"  # to secure a session cookie
+# For security purposes
+"""
+app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+"""
 
 # Create database instance
 db = SQLAlchemy(app)
@@ -82,34 +88,24 @@ class RegisterForm(FlaskForm):
         ],
     )
 
-    confirm_password = PasswordField(
-        "Confirm Password",
-        validators=[
-            DataRequired(),
-            EqualTo("password", message="Passwords must match"),
-        ],
-    )
-
     submit = SubmitField("Register")
 
+    # Check for unique values
+    def validate_username(self, username):
+        existing_user_username = User.query.filter_by(username=username.data).first()
 
-# Check for unique values
-def validate_username(self, username):
-    existing_user_username = User.query.filter_by(username=username.data).first()
+        if existing_user_username:
+            raise ValidationError(
+                "That username already exists. Please choose a different one."
+            )
 
-    if existing_user_username:
-        raise ValidationError(
-            "That username already exists. Please choose a different one."
-        )
+    def validate_email(self, email):
+        existing_user_email = User.query.filter_by(email=email.data).first()
 
-
-def validate_email(self, email):
-    existing_user_email = User.query.filter_by(email=email.data).first()
-
-    if existing_user_email:
-        raise ValidationError(
-            "That email address already exists. Please choose a different one."
-        )
+        if existing_user_email:
+            raise ValidationError(
+                "That email address already exists. Please choose a different one."
+            )
 
 
 # Create Login form
@@ -186,6 +182,8 @@ def register():
 
         return redirect(url_for("login"))
 
+    print(form.errors)  # To print form validation errors
+
     return render_template("register.html", form=form)
 
 
@@ -200,7 +198,7 @@ def dashboard():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("home.html"))
+    return redirect(url_for("login"))
 
 
 # CRUD operations
