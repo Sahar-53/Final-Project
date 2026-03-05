@@ -11,12 +11,22 @@
 
     {{ form.username.label }}
     {{ form.username() }}
+    {% for error in form.username.errors %}
+    <span style="color:red">{{ error }}</span>
+    {% endfor %}
 
     {{ form.password.label }}
     {{ form.password() }}
+    {% for error in form.password.errors %}
+    <span style="color:red">{{ error }}</span>
+    {% endfor %}
 
     {{ form.submit() }}
 
 </form>
+
+{% if error %}
+<p style="color:red">{{ error }}</p>
+{% endif %}
 
 {% endblock %}
