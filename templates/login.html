@@ -1,6 +1,9 @@
 {% extends "base.html" %}
+
 {% block title %}<title>LogIn</title>{% endblock %}
+
 {% block content %}
+<a href="{{ url_for('register') }}" class=""> Don't have an account? Sign up here! </a>
 
 <form id="login" method="POST" action="/login">
     <h2 class="text-3xl font-bold text-center mt-4 mb-8">Log In</h2>
