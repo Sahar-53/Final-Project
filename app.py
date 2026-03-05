@@ -1,9 +1,10 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, Length, ValidationError, EqualTo
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 """
@@ -70,7 +71,8 @@ class RegisterForm(FlaskForm):
         ],
     )
 
-    submit = SubmitField("Register")
+
+submit = SubmitField("Register")
 
 
 # Check for unique values
@@ -95,7 +97,7 @@ def validate_email(self, email):
 # Create Login form
 class LoginForm(FlaskForm):
 
-    identifier = StringField(
+    username = StringField(
         "Username or Email",
         validators=[
             DataRequired(message="Username or Email is required"),
@@ -131,6 +133,20 @@ def login():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegisterForm()
+
+    if form.validate_on_submit():
+
+        hashed_password = generate_password_hash(form.password.data)
+
+        user = User(
+            username=form.username.data, email=form.email.data, password=hashed_password
+        )
+
+        db.session.add(user)
+        db.session.commit()
+
+        return redirect(url_for("login"))
+
     return render_template("register.html", form=form)
 
 
