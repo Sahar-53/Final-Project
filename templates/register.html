@@ -4,4 +4,22 @@
 
 {% block content %}
 <a href="{{ url_for('login') }}" class="">Already have an account? Log in</a>
+<br><br>
+<form id="register" method="POST" action="/register">
+
+    {{ form.hidden_tag() }}
+
+    {{ form.username.label }}
+    {{ form.username() }}
+
+    {{ form.email.label }}
+    {{ form.username() }}
+
+    {{ form.password.label }}
+    {{ form.password() }}
+
+    {{ form.submit() }}
+
+</form>
+
 {% endblock %}

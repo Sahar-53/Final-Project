@@ -1,10 +1,18 @@
 from flask import Flask, render_template, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin
+from flask_login import (
+    UserMixin,
+    LoginManager,
+    login_user,
+    logout_user,
+    login_required,
+    current_user,
+)
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, Length, ValidationError, EqualTo
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import or_
 
 
 """
@@ -24,6 +32,17 @@ app.config["SECRET_KEY"] = "This is a secret key"  # to secure a session cookie
 
 # Create database instance
 db = SQLAlchemy(app)
+
+# This part allows the app and Flask-Login to work together
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+
+# Load user for Flask-Login
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 # Create User database structure
@@ -71,8 +90,7 @@ class RegisterForm(FlaskForm):
         ],
     )
 
-
-submit = SubmitField("Register")
+    submit = SubmitField("Register")
 
 
 # Check for unique values
@@ -124,6 +142,25 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()  # To add the form
+
+    # ------Authentication--------#
+    if form.validate_on_submit():
+        user_input = form.username.data  # this is whatever the user typed
+
+        # ----- checks for username and email address
+        user = User.query.filter(
+            or_(User.username == user_input, User.email == user_input)
+        ).first()
+
+        # ------ checks if password matches with the one on database----#
+        if user and check_password_hash(user.password, form.password.data):
+            login_user(user)
+            return redirect(url_for("dashboard"))
+        else:
+            return render_template(
+                "login.html", form=form, error="Invalid username or password"
+            )
+
     return render_template(
         "login.html", form=form
     )  # form variable created to pass the form to HTML template
@@ -134,15 +171,17 @@ def login():
 def register():
     form = RegisterForm()
 
+    # -----Password hash feature----------#
     if form.validate_on_submit():
 
         hashed_password = generate_password_hash(form.password.data)
 
-        user = User(
+        new_user = User(
             username=form.username.data, email=form.email.data, password=hashed_password
         )
 
-        db.session.add(user)
+        # -----Add to database ----------#
+        db.session.add(new_user)
         db.session.commit()
 
         return redirect(url_for("login"))
@@ -150,9 +189,18 @@ def register():
     return render_template("register.html", form=form)
 
 
-@app.route("/dashboard")
-def dahsboard():
+@app.route("/dashboard", methods=["GET", "POST"])
+@login_required  # ---user can only access if logged in
+def dashboard():
     return render_template("dashboard.html")
+
+
+# Logout route
+@app.route("/logout", methods=["GET", "POST"])
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("home.html"))
 
 
 # CRUD operations
