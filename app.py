@@ -1,18 +1,11 @@
-from flask import Flask, render_template, url_for, redirect, flash
+from flask import Flask, render_template, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import (
-    UserMixin,
-    LoginManager,
-    login_user,
-    logout_user,
-    login_required,
-    current_user,
-)
+from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, Length, ValidationError
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy import or_
+from sqlalchemy import or_, CheckConstraint
 
 
 """
@@ -126,6 +119,25 @@ class LoginForm(FlaskForm):
     )
 
     submit = SubmitField("Login")
+
+
+# Tasks table
+class Tasks(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(500))
+    due_date = db.Column(db.Date, nullable=False)
+    status = db.Column(
+        db.String(20),
+        CheckConstraint("status IN ('To Do', 'In Progress', 'Completed')"),
+        nullable=False,
+    )
+    priority = db.Column(
+        db.String(20),
+        CheckConstraint("priority IN ('Low', 'Medium', 'High')"),
+        nullable=False,
+    )
 
 
 # ---- Home page ----#
