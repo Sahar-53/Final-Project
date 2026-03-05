@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #login {
     display: flex;
     flex-direction: column;
@@ -17,4 +18,25 @@
     margin-bottom: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
+=======
+#login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.label {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.inputfield {
+    width: 300px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+>>>>>>> b7300f7fed2f396191f3e221b616b504455fcacd
 }
