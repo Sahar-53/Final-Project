@@ -20,6 +20,7 @@ app.config["SECRET_KEY"] = "This is a secret key"  # to secure a session cookie
 app.config["SESSION_COOKIE_SECURE"] = True
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config['PREFERRED_URL_SCHEME'] = 'https'
 
 
 # Create database instance
@@ -197,6 +198,13 @@ def register():
 def tasks():
 
     tasks = Tasks.query.filter_by(user_id=current_user.id).all()
+
+    status_query = request.args.get('status')
+
+    if status_query:
+        tasks = Tasks.query.filter_by(status=status_query).all()
+    else:
+        tasks = Tasks.query.all()
 
     return render_template("tasks.html", tasks=tasks)
 

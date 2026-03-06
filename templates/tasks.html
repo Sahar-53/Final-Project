@@ -24,7 +24,15 @@
             <th>Description</th>
             <th>Priority</th>
             <th>Due Date</th>
-            <th>Status</th>
+            <th>
+                Status<br>
+             <select onchange="location = this.value;">
+                <option value="/tasks">All</option>
+                <option value="/tasks?status=To Do">To Do</option>
+                <option value="/tasks?status=In Progress">In Progress</option>
+                <option value="/tasks?status=Completed">Completed</option>
+            </select>
+            </th>
             <th>Actions</th>
 
         </tr>
