@@ -205,6 +205,17 @@ def tasks():
     if status_query:
         tasks = Tasks.query.filter_by(status=status_query)
 
+    # -------- SEARCH --------
+    search_query = request.args.get("search")
+
+    if search_query:
+        tasks = tasks.filter(
+            or_(
+                Tasks.title.ilike(f"%{search_query}%"),
+                Tasks.description.ilike(f"%{search_query}%")
+            )
+        )
+
     # -------- SORTING --------
     sort = request.args.get("sort")
     order = request.args.get("order", "asc")

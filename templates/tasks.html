@@ -20,9 +20,22 @@
 
 {% else %}
 
+<!-----Search button-->
+<form method="GET" action="/tasks">
+
+<input 
+type="text" 
+name="search" 
+placeholder="Search tasks by title or description">
+
+<button type="submit">Search</button>
+
+</form>
+<br><br>
+
 <!--------- Button to clear filter ------->
-{% if request.args.get('status') %}
-<a href="/tasks" class="button">Clear Filter</a>
+{% if request.args.get('status') or request.args.get('search') %}
+<a href="/tasks" class="button">Show All Tasks</a>
 {% endif %}
 
 <div class="flex text-center mb-6">
@@ -85,6 +98,7 @@
             </td>
         </tr>
         {% endfor %}
+        
     </table>
 </div>
 
