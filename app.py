@@ -134,8 +134,8 @@ class Tasks(db.Model, UserMixin):
 
 # --------------- Home page -------------#
 @app.route("/")
-def index():
-    return render_template("home.html")
+def home():
+    return render_template("home.html", username=current_user.username if current_user.is_authenticated else None)
 
 
 # ---------------- Login page --------------#
@@ -155,7 +155,7 @@ def login():
         # ------ checks if password matches with the one on database----#
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
-            return redirect(url_for("tasks"))
+            return redirect(url_for("home"))
         else:
             return render_template(
                 "login.html", form=form, error="Invalid username or password"

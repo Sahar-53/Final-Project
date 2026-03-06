@@ -4,25 +4,41 @@
 
 {% block content %}
 
-<nav>
-    <ul>
-        <li><a href="{{ url_for('login') }}">Login</a></li>
-        <li><a href="{{ url_for('register') }}">Sign Up</a></li>
-    </ul>
-</nav>
- <br>
-  <br>
-   <br>
-<h1 class="text-4xl font-bold text-center mt-4 mb-8">Welcome to the Home Page!</h1>
+<!-- Display the message below if user is logged in--->
+{% if current_user.is_authenticated %}
+<h1 class="text-4xl font-bold text-center mt-4 mb-8">Welcome to Task Manager {{ username }}!</h1>
 
-<!-- Button for login and sign_up page
+<p class="text-center mt-6 max-w-2xl mx-auto">
+Your space to organise tasks, manage priorities, and stay on top of deadlines.
+</p>
 
-<a href="{{ url_for('login') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Login</a>
-<br>
-<br>
-<br>
-<a href="{{ url_for('register') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Sign
-    Up</a>
--->
+<p class="text-center mt-4">
+Head over to your <strong>Dashboard</strong> to create tasks, track progress, and keep everything running smoothly.
+</p>
 
+<p class="text-center mt-6 font-semibold">
+Stay organised and keep moving forward one task at a time.
+</p>
+
+{% else %}
+
+<!-- Display the message below if user is not logged in--->
+<h1 class="text-4xl font-bold text-center mt-4 mb-8">Welcome to Task Manager!</h1>
+
+<p class="text-center mt-6 max-w-2xl mx-auto">
+Your space to organise tasks, manage priorities, and stay on top of deadlines.
+</p>
+
+<p class="text-center mt-4">
+Already have an account? <strong>Log in</strong> to access your dashboard and start managing your tasks.
+</p>
+
+<p class="text-center mt-4">
+New here? <strong> Sign up today</strong> and begin your journey towards better organisation and productivity.
+</p>
+
+<p class="text-center mt-6 font-semibold">
+Take the first step toward staying on top of your tasks and making every day more productive.
+</p>
+{% endif %}
 {% endblock %}

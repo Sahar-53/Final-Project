@@ -1,3 +1,4 @@
+/* 
 .button{
 background-color: #2563eb;
 color: white;
@@ -14,4 +15,50 @@ text-decoration: none;
 .button-container{
     text-align: center;   
     margin-bottom: 1.5rem;
+}
+*/
+
+th, td {
+    border: 1px solid black;
+    padding: 3px;
+    text-align: center;
+}
+
+nav {
+  position: fixed;   
+  top: 0;  
+  left: 0;   
+  width: 100%;   
+  padding: 10px 0px;    
+  z-index: 1000; 
+}
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+nav li {
+    margin: 0 4px;
+    border: 2px solid rgb(236, 226, 226);
+    padding: 5px 40px;
+    background-color: rgb(81, 87, 88);
+}
+nav a {
+    color: rgb(236, 226, 226);
+    font-family: roboto;
+    text-decoration: none;
+    position: relative;
+}
+nav a:hover {
+    color: #fcfcfc;
+    border-bottom: 2px solid #ffffff;
+}
+
+.flash-message{
+    color: rgb(138, 17, 17);
+    font-weight: bold;
+    margin-bottom: 10px;
 }

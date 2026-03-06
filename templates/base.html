@@ -12,6 +12,33 @@
 </head>
 
 <body>
+    <nav class="bg-gray-800 text-white p-4">
+    <div class="flex justify-between items-center max-w-6xl mx-auto">
+
+        <!-- Logo / Home -->
+        <a href="" class="text-xl font-bold">Task Manager</a>
+
+        <!-- Navigation Links -->
+        <div class="space-x-6">
+
+            <a href="/" class="hover:text-gray-300">Home</a>
+
+            {% if current_user.is_authenticated %}
+                <a href="/tasks" class="hover:text-gray-300">Dashboard</a>
+                <a href="/logout" class="hover:text-gray-300">Logout</a>
+            {% else %}
+                <a href="/login" class="hover:text-gray-300">Login</a>
+                <a href="/register" class="hover:text-gray-300">Register</a>
+            {% endif %}
+
+        </div>
+
+    </div>
+    </nav>
+    <br>
+    <br>
+    <br>
+    <br>
 
     {% block content %}
 
