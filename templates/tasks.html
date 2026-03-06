@@ -9,6 +9,7 @@
     <a class="button" href="{{ url_for('create_task') }}"> Create Task </a>
 </div>
 
+<!--------- Will display the below message if there are tasks ------->
 {% if tasks|length == 0 %}
 
 <div class="text-center text-gray-500 mt-10">
@@ -17,20 +18,40 @@
 
 {% else %}
 
-<div>
-    <table>
+<!--------- Button to clear filter ------->
+{% if request.args.get('status') %}
+<a href="/tasks" class="button">Clear Filter</a>
+{% endif %}
+
+<div class="text-center mb-6">
+    <table class="table-auto w-full border-collapse border border-gray-300">
         <tr>
             <th>Title</th>
             <th>Description</th>
             <th>Priority</th>
             <th>Due Date</th>
-            <th>
-                Status<br>
-             <select onchange="location = this.value;">
-                <option value="/tasks">All</option>
-                <option value="/tasks?status=To Do">To Do</option>
-                <option value="/tasks?status=In Progress">In Progress</option>
-                <option value="/tasks?status=Completed">Completed</option>
+            <!--------- Filter by status ------->
+            <th> Status<br>
+             <select class="text-center" onchange="location = this.value;">
+                <option value="/tasks"
+                {% if request.args.get('status') is none %}selected{% endif %}>
+                All
+                </option>
+
+                <option value="/tasks?status=To Do"
+                {% if request.args.get('status') == 'To Do' %}selected{% endif %}>
+                To Do
+                </option>
+
+                <option value="/tasks?status=In Progress"
+                {% if request.args.get('status') == 'In Progress' %}selected{% endif %}>
+                In Progress
+                </option>
+
+                <option value="/tasks?status=Completed"
+                {% if request.args.get('status') == 'Completed' %}selected{% endif %}>
+                Completed
+                </option>
             </select>
             </th>
             <th>Actions</th>
@@ -39,7 +60,7 @@
 
         {% for task in tasks %}
 
-        <tr>
+        <tr class="table-auto w-full border-collapse border border-gray-300">
             <td>{{ task.title }}</td>
             <td>{{ task.description }}</td>
             <td>{{ task.priority }}</td>
