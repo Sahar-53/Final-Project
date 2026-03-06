@@ -106,7 +106,7 @@ class LoginForm(FlaskForm):
     password = PasswordField(
         "Password",
         validators=[
-            DataRequired(message="Password is required"),
+            DataRequired(),
         ],
     )
 
@@ -206,7 +206,7 @@ def tasks():
     else:
         tasks = Tasks.query.all()
 
-    return render_template("tasks.html", tasks=tasks)
+    return render_template("tasks.html", tasks=tasks, username=current_user.username)
 
 
 # ---------------CRUD operations-----------#
@@ -228,6 +228,11 @@ def create_task():
         # convert string to Python date
         due_date = date.fromisoformat(request.form["due_date"])
 
+        if due_date < date.today():
+            flash("Due date cannot be in the past.")
+            return redirect(url_for("create_task"))
+
+        # ---- create task
         task = Tasks(
             title=title,
             description=description,
@@ -271,9 +276,9 @@ def edit_task(id):
 # -----------Delete a task-------------#
 @app.route("/tasks/<int:id>/delete")
 def delete_task(id):
-    task = Tasks.query.get_or_404(id)
+    task_to_delete = Tasks.query.get_or_404(id)
 
-    db.session.delete(task)
+    db.session.delete(task_to_delete)
     db.session.commit()
 
     return redirect(url_for("tasks"))
