@@ -23,9 +23,9 @@
 <a href="/tasks" class="button">Clear Filter</a>
 {% endif %}
 
-<div class="text-center mb-6">
-    <table class="table-auto w-full border-collapse border border-gray-300">
-        <tr>
+<div class="flex text-center mb-6">
+    <table class="table-auto border-collapse border-gray-300">
+        <tr class="table-auto border-collapse border-gray-300">
             <th>Title</th>
             <th>Description</th>
             <th>Priority</th>
@@ -60,7 +60,7 @@
 
         {% for task in tasks %}
 
-        <tr class="table-auto w-full border-collapse border border-gray-300">
+        <tr class="table-auto border-collapse border-gray-300">
             <td>{{ task.title }}</td>
             <td>{{ task.description }}</td>
             <td>{{ task.priority }}</td>
@@ -68,7 +68,10 @@
             <td>{{ task.status }}</td>
             <td>
                 <a class="button" href="/tasks/{{task.id}}/edit">Edit</a>
-                <a class="button" href="/tasks/{{task.id}}/delete">Delete</a>
+                <!-- Confirm before deleting-->
+                <a class="button" href="/tasks/{{task.id}}/delete" 
+                onclick="return confirm('Are you sure you want to delete this task?');"> 
+                Delete</a>
             </td>
         </tr>
         {% endfor %}
