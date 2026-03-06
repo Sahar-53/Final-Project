@@ -197,14 +197,37 @@ def register():
 # ------ This sends all user tasks to the dashboard page.
 def tasks():
 
-    tasks = Tasks.query.filter_by(user_id=current_user.id).all()
+    tasks = Tasks.query.filter_by(user_id=current_user.id)
 
     status_query = request.args.get('status')
 
+    # -----Filter by status--------#
     if status_query:
-        tasks = Tasks.query.filter_by(status=status_query).all()
-    else:
-        tasks = Tasks.query.all()
+        tasks = Tasks.query.filter_by(status=status_query)
+
+    # -------- SORTING --------
+    sort = request.args.get("sort")
+    order = request.args.get("order", "asc")
+
+    if sort == "title":
+        if order == "desc":
+            tasks = tasks.order_by(Tasks.title.desc())
+        else:
+            tasks = tasks.order_by(Tasks.title.asc())
+
+    elif sort == "due_date":
+        if order == "desc":
+            tasks = tasks.order_by(Tasks.due_date.desc())
+        else:
+            tasks = tasks.order_by(Tasks.due_date.asc())
+
+    elif sort == "status":
+        if order == "desc":
+            tasks = tasks.order_by(Tasks.status.desc())
+        else:
+            tasks = tasks.order_by(Tasks.status.asc())
+
+    tasks = tasks.all()
 
     return render_template("tasks.html", tasks=tasks, username=current_user.username)
 

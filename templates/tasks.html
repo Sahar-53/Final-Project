@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% block title %}<title>Tasks</title>{% endblock %}
 {% block content %}
+
+
 <h1 class="text-4xl font-bold text-center mt-4 mb-8"> Tasks </h1>
 
-<h2 class="text-4xl font-bold text-center mt-4 mb-8">Your Tasks</h2>
+<h2 class="text-4xl font-bold text-center mt-4 mb-8">Welcome {{ username }}!</h2>
 
 <div class="text-center mb-6">
     <a class="button" href="{{ url_for('create_task') }}"> Create Task </a>
@@ -25,11 +27,17 @@
 
 <div class="flex text-center mb-6">
     <table class="table-auto border-collapse border-gray-300">
-        <tr class="table-auto border-collapse border-gray-300">
-            <th>Title</th>
+        <tr class="table-auto border-collapse border border-gray-300">
+            <th>Title
+                <a href="/tasks?sort=title&order=asc">▲</a>
+                <a href="/tasks?sort=title&order=desc">▼</a>
+            </th>
             <th>Description</th>
             <th>Priority</th>
-            <th>Due Date</th>
+            <th>Due Date
+                <a href="/tasks?sort=due_date&order=asc">▲</a>
+                <a href="/tasks?sort=due_date&order=desc">▼</a>
+            </th>
             <!--------- Filter by status ------->
             <th> Status<br>
              <select class="text-center" onchange="location = this.value;">
@@ -53,6 +61,8 @@
                 Completed
                 </option>
             </select>
+            <a href="/tasks?sort=status&order=asc">▲</a>
+            <a href="/tasks?sort=status&order=desc">▼</a>
             </th>
             <th>Actions</th>
 
@@ -60,7 +70,7 @@
 
         {% for task in tasks %}
 
-        <tr class="table-auto border-collapse border-gray-300">
+        <tr class="table-auto border-collapse border border-gray-300">
             <td>{{ task.title }}</td>
             <td>{{ task.description }}</td>
             <td>{{ task.priority }}</td>
@@ -79,6 +89,14 @@
 </div>
 
 {% endif %}
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+        <p class="flash-message">{{ message }}</p>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
 <div class="button-container">
     <a class="button" href="{{url_for('login')}}"> Click here to logout</a>
