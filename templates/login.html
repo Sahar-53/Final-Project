@@ -4,26 +4,40 @@
 
 {% block content %}
 
-<a href="{{ url_for('register') }}" class=""> Don't have an account? Sign up here! </a>
+<div class="max-w-3xl mx-auto px-4 mt-10">
 
-<form id="login" method="POST" action="">
+<form id="login" method="POST" action="" class="max-w-md mx-auto space-y-4">
 
     {{ form.hidden_tag() }}
 
-    {{ form.username.label }}
-    {{ form.username() }}
-    
+    <div class="flex items-center">
+        <label class="w-40 font-semibold" for="title">Username or Email</label>
+        <div class="flex-1">{{ form.username(class="w-full border border-gray-300 rounded px-3 py-2") }}</div>
+    </div>
 
-    {{ form.password.label }}
-    {{ form.password() }}
-    
+    <div class="flex items-center">
+        <label class="w-40 font-semibold">Password</label>
+        <div class="flex-1">{{ form.password(class="w-full border border-gray-300 rounded px-3 py-2") }}</div>
+    </div>
 
-    {{ form.submit() }}
+    <div class="flex justify-end">
+        {{ form.submit(class="bg-blue-500 text-white px-4 py-2 rounded") }}
+    </div>
 
 </form>
 
+<div class="flex justify-center items-center">
 {% if error %}
 <p style="color:red">{{ error }}</p>
 {% endif %}
+</div>
+
+<div class="flex justify-end items-center bg-green-500 text-white rounded w-70 ml-80 m-6 p-2">
+<a href="{{ url_for('register') }}">
+    Don't have an account? Sign up here!
+</a>
+</div>
+
+</div>
 
 {% endblock %}
