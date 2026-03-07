@@ -28,11 +28,19 @@
 </div>
 
 
-<!--------- Will display the below message if there are tasks ------->
+<!--------- Will display the below message if there are tasks --------->
 {% if tasks|length == 0 %}
 
 <div class="text-center text-gray-500 mt-10">
-    You have 0 tasks. Create your first task!
+    {% if search_query %}
+        <p class="text-center text-gray-500 mt-6">0 tasks found.</p>  <!---- For searcn query ---->
+        <!---- Back button ---->
+        <div class="text-center pt-4">
+        <a class="back-button" href="{{ url_for('tasks') }}">Back to Tasks</a>
+        </div>
+    {% else %}
+        <p class="text-center text-gray-500 mt-6">You have 0 tasks. Create your first task!</p>  <!---- For 0 tasks ---->
+    {% endif %}
 </div>
 
 {% else %}

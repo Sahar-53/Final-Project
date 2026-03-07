@@ -240,7 +240,7 @@ def tasks():
 
     tasks = tasks.all()
 
-    return render_template("tasks.html", tasks=tasks, username=current_user.username)
+    return render_template("tasks.html", tasks=tasks, username=current_user.username, search_query=search_query)
 
 
 # ---------------CRUD operations-----------#
