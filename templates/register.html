@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<div class="max-w-3xl mx-auto px-4 mt-10">
+<div class="max-w-3xl mx-auto px-4 mt-30">
 
 <form id="register" method="POST" action="/register" class="max-w-md mx-auto space-y-4">
 
@@ -45,7 +45,8 @@
 {% endfor %}
 </div>
 
-<div class="flex justify-end items-center bg-green-500 text-white rounded w-62 ml-90 m-6 p-2">
+<br>
+<div class="flex bg-green-500 text-white rounded max-w-sm mx-auto w-63 m-6 p-2">
 <a href="{{ url_for('login') }}" class="">Already have an account? Log in</a>
 </div>
 
