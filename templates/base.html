@@ -12,11 +12,11 @@
 </head>
 
 <body>
-    <nav class="bg-gray-800 text-white p-4">
+    <nav class="fixed top-0 left-0 w-full bg-gray-800 text-white p-4 z-50">
     <div class="flex justify-between items-center max-w-6xl mx-auto">
 
-        <!-- Logo / Home -->
-        <a href="" class="text-xl font-bold">Task Manager</a>
+        <!-- Logo -->
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="h-12 w-15">
 
         <!-- Navigation Links -->
         <div class="space-x-6">
@@ -24,11 +24,11 @@
             <a href="/" class="hover:text-gray-300">Home</a>
 
             {% if current_user.is_authenticated %}
-                <a href="/tasks" class="hover:text-gray-300">Dashboard</a>
-                <a href="/logout" class="hover:text-gray-300">Logout</a>
+                <a href="/tasks">Dashboard</a>
+                <a href="/logout">Logout</a>
             {% else %}
-                <a href="/login" class="hover:text-gray-300">Login</a>
-                <a href="/register" class="hover:text-gray-300">Register</a>
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
             {% endif %}
 
         </div>

@@ -2,13 +2,16 @@
 {% block title %}<title>Tasks</title>{% endblock %}
 {% block content %}
 
-
+<!---- Heading on the page ---->
 <h1 class="text-4xl font-bold text-center mt-4 mb-8"> Dashboard </h1>
 
-<h2 class="text-3xl font-bold text-center mt-6">
+
+<!---- Text under heading ---->
+<div class="text-center mb-6">
+<h2 class="text-2xl font-bold text-center mt-6">
     Ready to get things done, {{ current_user.username }}?
 </h2>
-
+<br>
 <p class="text-center text-gray-600 mt-3">
     Use your dashboard to manage tasks and stay on top of your priorities.
 </p>
@@ -16,10 +19,14 @@
 <p class="text-center mt-2 text-gray-500">
     You currently have {{ tasks|length }} tasks.
 </p>
-
-<div class="text-center mb-6">
-    <a class="button" href="{{ url_for('create_task') }}"> Create Task </a>
 </div>
+
+
+<!---- Create task button ---->
+<div class="text-center mb-6">
+    <a id="create" href="{{ url_for('create_task') }}"> Create Task </a>
+</div>
+
 
 <!--------- Will display the below message if there are tasks ------->
 {% if tasks|length == 0 %}
@@ -30,16 +37,14 @@
 
 {% else %}
 
+
 <!-----Search button-->
 <div class="max-w-6xl mx-auto px-4 mt-6 flex justify-start">
 <form method="GET" action="/tasks">
 
-<input 
-type="text" 
-name="search" 
-placeholder="Search tasks by title or description">
+<input class="w-80 border rounded" type="text" name="search" placeholder="Search tasks by title or description">
 
-<button type="submit">Search</button>
+<button id="search" type="submit">Search</button>
 
 </form>
 </div>
@@ -47,7 +52,7 @@ placeholder="Search tasks by title or description">
 
 <!--------- Button to clear filter ------->
 {% if request.args.get('status') or request.args.get('search') %}
-<a href="/tasks" class="button">Show All Tasks</a>
+<a href="/tasks" id="clear">Show All Tasks</a>
 {% endif %}
 
 <div class="max-w-6xl mx-auto px-4 mt-8">
