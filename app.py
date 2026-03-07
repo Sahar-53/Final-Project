@@ -8,37 +8,40 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import or_, CheckConstraint
 from datetime import date
 
-# ---------Initialize the Flask app------------#
+
+# ======= Initialize the Flask app ======= #
 app = Flask(__name__)
 
-# Configure SQLite database
+
+# ======= Configure SQLite database ======= #
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///task_management.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False  # Avoids a warning
 app.config["SECRET_KEY"] = "This is a secret key"  # to secure a session cookie
 
-# For security purposes
+# ====== For security purposes ====== #
 app.config["SESSION_COOKIE_SECURE"] = True
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 app.config['PREFERRED_URL_SCHEME'] = 'https'
 
 
-# Create database instance
+# ====== Create database instance ====== #
 db = SQLAlchemy(app)
 
-# This part allows the app and Flask-Login to work together
+
+# === This part allows the app and Flask-Login to work together === #
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
 
-# Load user for Flask-Login
+# ====== Load user for Flask-Login ====== #
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-# ----------Create User database structure----------#
+# ====== Create User database structure ====== #
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
@@ -46,36 +49,24 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(50), nullable=False)
 
 
-# ----------Create Registration form with valdidators-----------#
+# ====== Create Registration form with valdidators ====== #
 class RegisterForm(FlaskForm):
 
-    username = StringField(
-        "Username",
-        validators=[
-            DataRequired(),
-            Length(min=4, max=20),
-        ],
-    )
+    username = StringField("Username", validators=[
+        DataRequired(), Length(min=4, max=20)
+    ])
 
-    email = StringField(
-        "Email",
-        validators=[
-            DataRequired(),
-            Email(),
-        ],
-    )
+    email = StringField("Email", validators=[
+        DataRequired(), Email()
+    ])
 
-    password = PasswordField(
-        "Password",
-        validators=[
-            DataRequired(),
-            Length(min=6, max=20),
-        ],
-    )
+    password = PasswordField("Password", validators=[
+        DataRequired(), Length(min=6, max=20)
+    ])
 
     submit = SubmitField("Register")
 
-    # -------------Check for unique values--------------#
+    # ======= Check for unique values ======#
     def validate_username(self, username):
         existing_user_username = User.query.filter_by(username=username.data).first()
 
@@ -93,27 +84,21 @@ class RegisterForm(FlaskForm):
             )
 
 
-# ---------------Create Login form---------------#
+# ====== Create Login form ======#
 class LoginForm(FlaskForm):
 
-    username = StringField(
-        "Username or Email",
-        validators=[
-            DataRequired(),
-        ],
-    )
+    username = StringField("Username or Email", validators=[
+        DataRequired()
+    ])
 
-    password = PasswordField(
-        "Password",
-        validators=[
-            DataRequired(),
-        ],
-    )
+    password = PasswordField("Password", validators=[
+        DataRequired(),
+    ])
 
     submit = SubmitField("Login")
 
 
-# ------------------Tasks table--------------------#
+# ======== Tasks table ======== #
 class Tasks(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
@@ -132,27 +117,29 @@ class Tasks(db.Model, UserMixin):
     )
 
 
-# --------------- Home page -------------#
+# ======== Routes ======== #
+# ======== Home page ======== #
 @app.route("/")
 def home():
-    return render_template("home.html", username=current_user.username if current_user.is_authenticated else None)
+    return render_template(
+        "home.html", username=current_user.username if current_user.is_authenticated else None)
 
 
-# ---------------- Login page --------------#
+# ======== Login page ======== #
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()  # To add the form
 
-    # ------Authentication-----------#
+    # ====== Authentication ====== #
     if form.validate_on_submit():
-        user_input = form.username.data  # this is whatever the user typed
+        user_input = form.username.data  # captures user input
 
-        # ----- checks for username and email address---------#
+        # ====== checks for username and email address ====== #
         user = User.query.filter(
             or_(User.username == user_input, User.email == user_input)
         ).first()
 
-        # ------ checks if password matches with the one on database----#
+        # ====== checks if password matches with the one on database ====== #
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
             return redirect(url_for("home"))
@@ -162,50 +149,44 @@ def login():
             )
 
     return render_template(
-        "login.html", form=form
-    )  # form variable created to pass the form to HTML template
+        "login.html", form=form)  # form variable created to pass the form to HTML template
 
 
-# ---- Sign-up page -------#
+# =============== Sign-up page =============== #
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegisterForm()
 
-    # -----Password hash feature-----------#
+    # ====== Password hash feature ====== #
     if form.validate_on_submit():
-
         hashed_password = generate_password_hash(form.password.data)
 
         new_user = User(
             username=form.username.data, email=form.email.data, password=hashed_password
         )
 
-        # -----Add to database ----------#
+        # ==== Add to database ===== #
         db.session.add(new_user)
         db.session.commit()
 
         return redirect(url_for("login"))
 
-    print(form.errors)  # To print form validation errors
-
     return render_template("register.html", form=form)
 
 
-# ============Tasks Dashboard---------------#
+# ============= Tasks Dashboard ============ #
 @app.route("/tasks", methods=["GET", "POST"])
-@login_required  # ---user can only access if logged in
-# ------ This sends all user tasks to the dashboard page.
+@login_required  # user can only access if logged in
 def tasks():
-
     tasks = Tasks.query.filter_by(user_id=current_user.id)
 
     status_query = request.args.get('status')
 
-    # -----Filter by status--------#
+    # === Filter by status === #
     if status_query:
         tasks = Tasks.query.filter_by(status=status_query)
 
-    # -------- SEARCH --------
+    # === Search functionality === #
     search_query = request.args.get("search")
 
     if search_query:
@@ -216,7 +197,7 @@ def tasks():
             )
         )
 
-    # -------- SORTING --------
+    # ==== Sorting functionality ==== #
     sort = request.args.get("sort")
     order = request.args.get("order", "asc")
 
@@ -243,10 +224,8 @@ def tasks():
     return render_template("tasks.html", tasks=tasks, username=current_user.username, search_query=search_query)
 
 
-# ---------------CRUD operations-----------#
-
-
-# -----------Create new task-------------#
+# ========= CRUD operations ======== #
+# =========== Create new task ================#
 @app.route("/tasks/new", methods=["GET", "POST"])
 @login_required
 def create_task():
@@ -259,14 +238,14 @@ def create_task():
         due_date = request.form["due_date"]
         status = request.form["status"]
 
-        # convert string to Python date
+        # ==== Converts string to Python date ==== #
         due_date = date.fromisoformat(request.form["due_date"])
 
         if due_date < date.today():
             flash("Due date cannot be in the past.")
             return redirect(url_for("create_task"))
 
-        # ---- create task
+        # === Creates task === #
         task = Tasks(
             title=title,
             description=description,
@@ -286,7 +265,7 @@ def create_task():
     return render_template("create_task.html")
 
 
-# -----------Edit a task-------------#
+# ==================== Edit a task ====================== #
 @app.route("/tasks/<int:id>/edit", methods=["GET", "POST"])
 def edit_task(id):
     task_to_edit = Tasks.query.get_or_404(id)
@@ -307,7 +286,7 @@ def edit_task(id):
     return render_template("edit_task.html", task=task_to_edit)
 
 
-# -----------Delete a task-------------#
+# ======= Delete a task ======== #
 @app.route("/tasks/<int:id>/delete")
 def delete_task(id):
     task_to_delete = Tasks.query.get_or_404(id)
@@ -318,7 +297,7 @@ def delete_task(id):
     return redirect(url_for("tasks"))
 
 
-# ----------Logout route---------#
+# ======== Logout route ======== #
 @app.route("/logout", methods=["GET", "POST"])
 @login_required
 def logout():
