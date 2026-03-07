@@ -10,12 +10,14 @@ nav a:hover {
     border-bottom: 2px solid #ffffff;
 }
 
+
 /* Tasks Table styling */
 th, td {
     border: 1px solid black;
-    padding: 3px;
+    padding: 0.5rem;
     text-align: center;
 }
+
 
 /* Create button styling */
 .create {
@@ -43,6 +45,7 @@ height: 30px;
   box-shadow:0 8px 10px 0 rgba(190, 96, 175, 0.6)
 }
 
+
 /* Show All Tasks button styling */
 #clear {
 background-color: #257beb;
@@ -54,6 +57,7 @@ border-radius: 0.25rem;
 #clear:hover {
   box-shadow:0 8px 10px 0 rgba(108, 166, 233, 0.6)
 }
+
 
 /* Edit button styling */
 #edit{
@@ -99,10 +103,7 @@ border-radius: 0.25rem;
 }
 
 
-
-
-
-
+/* Flash messages styling */
 .flash-message{
     color: rgb(219, 45, 45);
     font-weight: bold;
