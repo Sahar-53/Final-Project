@@ -18,14 +18,14 @@ th, td {
 }
 
 /* Create button styling */
-#create {
+.create {
 background-color: #9225eb;
 color: white;
 padding: 0.5rem 1rem;
 border-radius: 0.25rem;
 }
 
-#create:hover {
+.create:hover {
   box-shadow:0 8px 10px 0 rgba(121, 62, 115, 0.6)
 }
 
@@ -45,22 +45,66 @@ height: 30px;
 
 /* Show All Tasks button styling */
 #clear {
-background-color: #9225eb;
+background-color: #257beb;
 color: white;
 padding: 0.5rem 1rem;
 border-radius: 0.25rem;
 }
 
 #clear:hover {
-  box-shadow:0 8px 10px 0 rgba(121, 62, 115, 0.6)
+  box-shadow:0 8px 10px 0 rgba(108, 166, 233, 0.6)
+}
+
+/* Edit button styling */
+#edit{
+background-color: #f09b1b;
+color: white;
+padding: 0.2rem 0.5rem;
+border-radius: 0.25rem;
+}
+
+
+/* Delete Tasks button styling */
+#delete{
+background-color: #cc0f0f;
+color: white;
+padding: 0.2rem 0.5rem;
+border-radius: 0.25rem;
+}
+
+
+/* Update Tasks button styling */
+#update {
+background-color: #4ac213;
+color: white;
+padding: 0.5rem 1rem;
+border-radius: 0.25rem;
+}
+
+#update:hover {
+  box-shadow:0 8px 10px 0 rgba(121, 238, 150, 0.6)
+}
+
+
+/* Back button styling */
+.back-button {
+background-color: #c92397;
+color: white;
+padding: 0.5rem 1rem;
+border-radius: 0.25rem;
+}
+
+.back-button:hover {
+  box-shadow:0 8px 10px 0 rgba(175, 73, 162, 0.6)
 }
 
 
 
 
 
+
 .flash-message{
-    color: rgb(187, 16, 16);
+    color: rgb(219, 45, 45);
     font-weight: bold;
     margin-bottom: 10px;
 }
