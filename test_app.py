@@ -116,7 +116,7 @@ def test_create_task(client):
 
 # ===== Edit task ===== #
 def test_edit_task(client):
-    """Test creating a new task"""
+    """Editing a task"""
 
     # Login user
     client.post("/login", data={
@@ -151,3 +151,33 @@ def test_edit_task(client):
     updated_task = db.session.get(Tasks, task.id)
 
     assert updated_task.title == "Updated Task"
+
+
+# ===== Delete a task ===== #
+    """Editing a task"""
+
+    # Login user
+    client.post("/login", data={
+        "username": "testuser",
+        "password": "password123"
+    })
+
+    # Create a new task to be edited
+    task = Tasks(
+        title="Task to delete",
+        description="Test deleting",
+        priority="Low",
+        due_date=date(2026, 6, 10),
+        status="Completed",
+        user_id=10
+    )
+
+    db.session.add(task)
+    db.session.commit()
+
+    # delete task
+    client.get(f"/tasks/{task.id}/delete", follow_redirects=True)
+
+    deleted_task = db.session.get(Tasks, task.id)
+
+    assert deleted_task is None
