@@ -71,7 +71,7 @@ def test_login_invalid(client):
 
 # ===== Test 4 - Login ===== #
 def test_login_valid(client):
-    """Test to check if a user is unable to login with incorrect details"""
+    """Test to check if a user is unable to login with correct details"""
 
     with client.application.app_context():
         user = User(username="testuser", password="password123")
@@ -86,3 +86,36 @@ def test_login_valid(client):
     assert response.status_code == 200
     user = User.query.filter_by(username="testuser").first()
     assert user is not None
+
+
+# ===== CRUD operattions Tests ===== #
+# ===== Create Tasks ===== #
+
+# ===== Function to log user in as only authenticated users
+# ===== can view, create, edit or delete tasks ======= #
+def test_update_task(client):
+
+    with client.application.app_context():
+        user = User(username="testuser", password="password123")
+        db.session.add(user)
+        db.session.commit
+
+    client.post("/login", data={
+        "username": "testuser",
+        "password": "password123"
+    }, follow_redirects=True)
+
+
+""" Create a new task test """
+def create_new_task(client):
+
+    response = client.post("/tasks/new", data={
+        "title": "Test Task",
+        "description": "This is a test task",
+        "priority": "Low",
+        "status": "To Do"
+    }, follow_redirects=True)
+
+    assert response.status_code == 200
+    task = Tasks.query.filter_by(title="Test Task").first()
+    assert task is not None
