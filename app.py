@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 
 # ======= Configure SQLite database ======= #
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///task_management.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"  # In-memory database for testing
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False  # Avoids a warning
 app.config["SECRET_KEY"] = "This is a secret key"  # to secure a session cookie
 
@@ -38,7 +38,7 @@ login_manager.login_view = "login"
 # ====== Load user for Flask-Login ====== #
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return db.session.get(User, int(user_id))
 
 
 # ====== Create User database structure ====== #

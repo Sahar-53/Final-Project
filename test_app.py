@@ -9,7 +9,7 @@ def client():
     # === Configure for testing === #
     app.config.update({
         "TESTING": True,
-        "SQLALCHEMY_DATABASE_URI": "sqlite:///task_management.db",  # temporary database used
+        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",  # temporary database used
         "WTF_CSRF_ENABLED": False  # disable CRF protecting for testing
     })
 
@@ -92,13 +92,13 @@ def test_login_valid(client):
 def test_create_task(client):
     """Test creating a new task"""
 
-    # Login user
+    # == Login user == #
     client.post("/login", data={
         "username": "testuser",
         "password": "password123"
     })
 
-    # Create task
+    # == Create task == #
     response = client.post("/tasks/new", data={
         "title": "Test Task",
         "description": "Testing task creation",
@@ -118,13 +118,13 @@ def test_create_task(client):
 def test_edit_task(client):
     """Editing a task"""
 
-    # Login user
+    # == Login user == #
     client.post("/login", data={
         "username": "testuser",
         "password": "password123"
     })
 
-    # Create a new task to be edited
+    # == Create a new task to be edited == #
     task = Tasks(
         title="Test Task",
         description="Testing task creation",
@@ -154,15 +154,16 @@ def test_edit_task(client):
 
 
 # ===== Delete a task ===== #
+def test_delete_task(client):
     """Editing a task"""
 
-    # Login user
+    # == Login user == #
     client.post("/login", data={
         "username": "testuser",
         "password": "password123"
     })
 
-    # Create a new task to be edited
+    # == Create a new task to be edited == #
     task = Tasks(
         title="Task to delete",
         description="Test deleting",
@@ -175,9 +176,36 @@ def test_edit_task(client):
     db.session.add(task)
     db.session.commit()
 
-    # delete task
+    # == delete task == #
     client.get(f"/tasks/{task.id}/delete", follow_redirects=True)
 
     deleted_task = db.session.get(Tasks, task.id)
 
     assert deleted_task is None
+
+# ===== Read tasks ===== #
+def test_read_tasks(client):
+    """Test to check if a user is able to view their tasks"""
+
+    # == Login user == #
+    client.post("/login", data={
+        "username": "testuser",
+        "password": "password123"
+    })
+
+    # == Create a new task to be viewed == #
+    task = Tasks(
+        title="Task to view",
+        description="Test viewing",
+        priority="Medium",
+        due_date=date(2026, 5, 10),
+        status="In Progress",
+        user_id=1
+    )
+
+    db.session.add(task)
+    db.session.commit()
+
+    response = client.get("/tasks", follow_redirects=True)
+
+    assert response.status_code == 200
