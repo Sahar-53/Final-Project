@@ -37,7 +37,7 @@ def test_registeration_user(client):
 
 
 # ===== Test 2 - Registration ===== #
-def test_regiseration_invalid(client):
+def test_registeration_invalid(client):
     """Test to check if a user is unable to register with not unique email address"""
 
     with app.app_context():
@@ -72,7 +72,7 @@ def test_login_invalid(client):
 
 # ===== Test 4 - Login ===== #
 def test_login_valid(client):
-    """Test to check if a user is unable to login with correct details"""
+    """Test to check if a user is able to login with correct details"""
 
     with client.application.app_context():
         user = User(username="testuser", email="test-user@gmail.com", password="password123")
@@ -117,7 +117,7 @@ def test_create_task(client):
 
 # ===== Edit task ===== #
 def test_edit_task(client):
-    """Editing a task"""
+    """Test editing a task"""
 
     # == Login user == #
     client.post("/login", data={
@@ -138,7 +138,7 @@ def test_edit_task(client):
     db.session.add(task)
     db.session.commit()
 
-    # Update task
+    # == Update task  == #
     response = client.post(f"/tasks/{task.id}/edit", data={
         "title": "Updated Task",
         "description": "Updated description",
@@ -156,7 +156,7 @@ def test_edit_task(client):
 
 # ===== Delete a task ===== #
 def test_delete_task(client):
-    """Editing a task"""
+    """Test deleting a task"""
 
     # == Login user == #
     client.post("/login", data={
