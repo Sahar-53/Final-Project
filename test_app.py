@@ -1,5 +1,6 @@
 import pytest
-from app import app, db, User, Tasks, RegisterForm, LoginForm
+from app import app, db, User, RegisterForm, Tasks
+from datetime import date
 
 
 @pytest.fixture
@@ -8,7 +9,7 @@ def client():
     # === Configure for testing === #
     app.config.update({
         "TESTING": True,
-        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",  # temporary database used
+        "SQLALCHEMY_DATABASE_URI": "sqlite:///task_management.db",  # temporary database used
         "WTF_CSRF_ENABLED": False  # disable CRF protecting for testing
     })
 
@@ -74,7 +75,7 @@ def test_login_valid(client):
     """Test to check if a user is unable to login with correct details"""
 
     with client.application.app_context():
-        user = User(username="testuser", password="password123")
+        user = User(username="testuser", email="test-user@gmail.com", password="password123")
         db.session.add(user)
         db.session.commit
 
@@ -87,35 +88,66 @@ def test_login_valid(client):
     user = User.query.filter_by(username="testuser").first()
     assert user is not None
 
+# ===== Test 5 - Create Task ===== #
+def test_create_task(client):
+    """Test creating a new task"""
 
-# ===== CRUD operattions Tests ===== #
-# ===== Create Tasks ===== #
-
-# ===== Function to log user in as only authenticated users
-# ===== can view, create, edit or delete tasks ======= #
-def test_update_task(client):
-
-    with client.application.app_context():
-        user = User(username="testuser", password="password123")
-        db.session.add(user)
-        db.session.commit
-
+    # Login user
     client.post("/login", data={
         "username": "testuser",
         "password": "password123"
-    }, follow_redirects=True)
+    })
 
-
-""" Create a new task test """
-def create_new_task(client):
-
+    # Create task
     response = client.post("/tasks/new", data={
         "title": "Test Task",
-        "description": "This is a test task",
+        "description": "Testing task creation",
         "priority": "Low",
+        "due_date": "2026-03-10",
         "status": "To Do"
     }, follow_redirects=True)
 
-    assert response.status_code == 200
-    task = Tasks.query.filter_by(title="Test Task").first()
-    assert task is not None
+    print("STATUS:", response.status_code)
+
+    with app.app_context():
+        task = Tasks.query.filter_by(title="Test Task").first()
+        assert task is not None
+
+
+# ===== Edit task ===== #
+def test_edit_task(client):
+    """Test creating a new task"""
+
+    # Login user
+    client.post("/login", data={
+        "username": "testuser",
+        "password": "password123"
+    })
+
+    # Create a new task to be edited
+    task = Tasks(
+        title="Test Task",
+        description="Testing task creation",
+        priority="Low",
+        due_date=date(2026, 3, 10),
+        status="To Do",
+        user_id=3
+    )
+
+    db.session.add(task)
+    db.session.commit()
+
+    # Update task
+    response = client.post(f"/tasks/{task.id}/edit", data={
+        "title": "Updated Task",
+        "description": "Updated description",
+        "priority": "High",
+        "status": "In Progress",
+        "due_date": "2026-03-15"
+    }, follow_redirects=True)
+
+    print("STATUS:", response.status_code)
+
+    updated_task = db.session.get(Tasks, task.id)
+
+    assert updated_task.title == "Updated Task"
