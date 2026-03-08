@@ -88,6 +88,7 @@ def test_login_valid(client):
     user = User.query.filter_by(username="testuser").first()
     assert user is not None
 
+
 # ===== Test 5 - Create Task ===== #
 def test_create_task(client):
     """Test creating a new task"""
@@ -182,6 +183,7 @@ def test_delete_task(client):
     deleted_task = db.session.get(Tasks, task.id)
 
     assert deleted_task is None
+
 
 # ===== Read tasks ===== #
 def test_read_tasks(client):
