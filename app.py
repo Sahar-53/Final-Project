@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 
 # ======= Configure SQLite database ======= #
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"  # In-memory database for testing
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///task_management.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False  # Avoids a warning
 app.config["SECRET_KEY"] = "This is a secret key"  # to secure a session cookie
 
@@ -182,9 +182,15 @@ def tasks():
 
     status_query = request.args.get('status')
 
+    priority_query = request.args.get('priority')
+
     # === Filter by status === #
     if status_query:
-        tasks = Tasks.query.filter_by(status=status_query)
+        tasks = tasks.filter_by(status=status_query)
+
+    # === Filter by priority === #
+    if priority_query:
+        tasks = tasks.filter_by(priority=priority_query)
 
     # === Search functionality === #
     search_query = request.args.get("search")

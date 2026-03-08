@@ -61,7 +61,7 @@
 
 <!---- Button to clear search or status filter ---->
 <div class="text-center mb-6">
-{% if request.args.get('status') or request.args.get('search') %}
+{% if request.args.get('priority') or request.args.get('status') or request.args.get('search') %}
 <a href="/tasks" id="clear">Show All Tasks</a>
 {% endif %}
 </div>
@@ -81,7 +81,29 @@
 
             <th>Description</th>
 
-            <th>Priority</th>
+            <!--------- Filter by priority ------->
+            <th>Priority
+                <select class="text-center" onchange="location = this.value;">
+                <option value="/tasks"
+                {% if request.args.get('priority') is none %}selected{% endif %}>
+                All
+                </option>
+
+                <option value="/tasks?priority=Low"
+                {% if request.args.get('priority') == 'Low' %}selected{% endif %}>
+                Low
+                </option>
+
+                <option value="/tasks?priority=Medium"
+                {% if request.args.get('priority') == 'Medium' %}selected{% endif %}>
+                Medium
+                </option>
+
+                <option value="/tasks?priority=High"
+                {% if request.args.get('priority') == 'High' %}selected{% endif %}>
+                High
+                </option>
+            </th>
 
             <th>Due Date
                 <a href="/tasks?sort=due_date&order=asc">▲</a>
