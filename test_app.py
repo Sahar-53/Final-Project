@@ -50,7 +50,7 @@ def test_regiseration_invalid(client):
         assert "That email address already exists. Please choose a different one." in form.email.errors
 
 
-# ===== Test 4 - Login ===== #
+# ===== Test 3 - Login ===== #
 def test_login_invalid(client):
     """Test to check if a user is unable to login with incorrect details"""
 
@@ -65,9 +65,11 @@ def test_login_invalid(client):
     }, follow_redirects=True)
 
     assert response.status_code == 200
+    user = User.query.filter_by(password="wrongpassword").first()
+    assert user is None
 
 
-# ===== Test 5 - Login ===== #
+# ===== Test 4 - Login ===== #
 def test_login_valid(client):
     """Test to check if a user is unable to login with incorrect details"""
 
@@ -82,3 +84,5 @@ def test_login_valid(client):
     }, follow_redirects=True)
 
     assert response.status_code == 200
+    user = User.query.filter_by(username="testuser").first()
+    assert user is not None
