@@ -1,20 +1,31 @@
 import pytest
-from app import app, db
+from app import app, db, User, Tasks
 
 
 @pytest.fixture
 def client():
-    app.config['Testing'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///memory:"  # temporary database used
-    app.config['WTF_CRF_ENABLED'] = False  # disable CRF protecting for testing
 
+    # === Configure for testing === #
+    app.config.update({
+        "TESTING": True,
+        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",  # temporary database used
+        "WTF_CSRF_ENABLED": False  # disable CRF protecting for testing
+    })
+
+    # === Create database tables === #
+    with app.app_context():
+        db.create_all()
+        db.drop_all()
+
+
+    # === Create test client === #
     with app.test_client() as client:
-        with app.app_context():
-            db.create_all()
         yield client  # allows setup before tests and cleaup after tests
 
-        with app.app_context():
-            db.drop_all()  # deletes the test records
+    # === cleans up database after tests
+    with app.app_context():
+        db.session.remove()
+        db.drop_all()  
 
 
 # ======== Tests ======== #
@@ -39,6 +50,6 @@ def test_regiseration_invalid(client):
         "username": "",
         "email": "test-user2@gmail.com",
         "password": "password123"
-    }, follow_redirects=True)  # redirect to avoid 302 status code
+    }, follow_redirects=True)
 
     assert b"Username is required" in response.data

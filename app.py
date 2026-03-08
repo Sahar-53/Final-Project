@@ -99,7 +99,7 @@ class LoginForm(FlaskForm):
 
 
 # ======== Tasks table ======== #
-class Tasks(db.Model, UserMixin):
+class Tasks(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     title = db.Column(db.String(100), nullable=False)
