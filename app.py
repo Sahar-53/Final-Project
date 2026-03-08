@@ -203,7 +203,7 @@ def tasks():
             )
         )
 
-    # ==== Sorting functionality ==== #
+    # ==== Sorting functionality ==== #  
     sort = request.args.get("sort")
     order = request.args.get("order", "asc")
 
