@@ -11,12 +11,16 @@ The application includes filtering options by status and priority to help users 
 ## Setup Instructions
 1.	Clone the repository
 git clone https://github.com/Sahar-53/Final-Project.git
-2.	Install dependencies
+2. Create a virtual environment
+python -m venv venv
+3. Activate the virtual environment
+venv\Scripts\activate
+4.	Install dependencies
 pip install -r requirements.txt
-3.	Set up the database
+5.	Set up the database
 Run the application once to initialise the database: python app.py
 This will create the SQLite database and required tables
-4.	Run the application
+6.	Run the application
 python app.py
 
 Next: open your browser and visit: http://127.0.0.1:5000
